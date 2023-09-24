@@ -1,4 +1,4 @@
-package edu.uit.kurse.kursebackend.model.dao;
+package edu.uit.kurse.kursebackend.model.persistent;
 
 import edu.uit.kurse.kursebackend.model.AccountRole;
 import jakarta.persistence.Id;

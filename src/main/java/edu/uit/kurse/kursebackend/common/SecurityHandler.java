@@ -3,7 +3,6 @@ package edu.uit.kurse.kursebackend.common;
 import edu.rmit.highlandmimic.model.User;
 import edu.rmit.highlandmimic.repository.UserRepository;
 import edu.uit.kurse.kursebackend.model.AccountRole;
-import edu.uit.kurse.kursebackend.model.dao.Account;
 import io.jsonwebtoken.impl.DefaultClaims;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
