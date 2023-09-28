@@ -2,6 +2,7 @@ package edu.uit.kurse.kursebackend.model.persistent;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,6 +20,7 @@ public class Topic {
     @Id
     private UUID id;
 
+    @NotNull
     private String name;
 
 }

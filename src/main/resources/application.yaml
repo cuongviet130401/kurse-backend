@@ -16,17 +16,18 @@ spring:
           starttls:
             enable: true
 
+
   output:
     ansi:
       enabled: ALWAYS
 
   main:
     allow-circular-references: true
-
 #  data:
 #    mongodb:
 #      uri: mongodb+srv://admin:admin@mongo-aufgabe-dev.671lr.mongodb.net/highland-mimic?retryWrites=true&w=majority
 #      database: highland-mimic
 
 server:
-  endpoint: http://localhost:8080
+  servlet:
+    context-path: /kurge/api
