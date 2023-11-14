@@ -1,6 +1,8 @@
 package edu.uit.kurse.kursebackend.model.persistent;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.Column;
+import jakarta.persistence.Table;
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,7 +16,8 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name = "transactions")
+@Entity(name = "KURSE_TRANSACTIONS")
+@Table(name = "KURSE_TRANSACTIONS")
 public class Transaction {
 
     @Id
@@ -26,6 +29,7 @@ public class Transaction {
 
     private LocalDateTime createdDateTime;
 
+    @Column(name = "transval")
     private Double value;
 
     private String description;

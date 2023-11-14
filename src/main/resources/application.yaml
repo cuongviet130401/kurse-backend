@@ -16,6 +16,11 @@ spring:
           starttls:
             enable: true
 
+  jpa:
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
 
   output:
     ansi:
@@ -31,3 +36,6 @@ spring:
 server:
   servlet:
     context-path: /kurge/api
+
+hibernate:
+  globally_quoted_identifiers: true
