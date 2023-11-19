@@ -1,10 +1,7 @@
 package edu.uit.kurse.kursebackend.model.request;
 
 import edu.uit.kurse.kursebackend.model.AccountRole;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.*;
 import lombok.Builder;
 import lombok.Data;
 
@@ -13,22 +10,21 @@ import lombok.Data;
 public class AccountRequestEntity {
 
     @NotBlank
-    @Min(6)
+    @Size(min = 6)
     private String username;
 
     @NotBlank
-    @Min(8)
+    @Size(min = 8)
     private String password;
 
     @Email
     private String email;
 
     @NotBlank
-    @Max(10)
-    @Min(10)
+    @Size(min = 10, max = 10)
     private String phoneNumber;
 
-    @Builder.Default
-    private AccountRole role = AccountRole.STUDENT;
+    @NotNull
+    private AccountRole role;
 
 }

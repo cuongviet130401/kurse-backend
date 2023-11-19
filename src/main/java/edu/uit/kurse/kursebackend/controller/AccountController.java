@@ -64,7 +64,7 @@ public class AccountController {
 //    }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody @Valid AuthenticationRequestEntity reqEntity) {
+    public ResponseEntity<?> login(@Valid @RequestBody AuthenticationRequestEntity reqEntity) {
         return controllerWrapper(() -> accountService.login(reqEntity));
     }
 
@@ -76,7 +76,7 @@ public class AccountController {
     // WRITE operation
 
     @PostMapping("/signup")
-    public ResponseEntity<?> createNewAccount(@RequestBody @Valid AccountRequestEntity reqEntity) {
+    public ResponseEntity<?> createNewAccount(@Valid @RequestBody AccountRequestEntity reqEntity) {
         return controllerWrapper(() -> accountService.createNewAccount(reqEntity));
     }
 

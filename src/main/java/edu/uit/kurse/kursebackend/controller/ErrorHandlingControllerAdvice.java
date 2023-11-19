@@ -2,6 +2,7 @@ package edu.uit.kurse.kursebackend.controller;
 
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -13,7 +14,7 @@ import java.util.Map;
 @ControllerAdvice
 public class ErrorHandlingControllerAdvice {
 
-    @ExceptionHandler(ConstraintViolationException.class)
+    @ExceptionHandler({ConstraintViolationException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
     List<Map<String, String>> onConstraintValidationException(ConstraintViolationException e) {
@@ -23,6 +24,14 @@ public class ErrorHandlingControllerAdvice {
                 "message", violation.getMessage()
         )).toList();
     }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    Object onMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+        return e.getDetailMessageArguments();
+    }
+
 
 
 }

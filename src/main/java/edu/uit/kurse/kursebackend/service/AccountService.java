@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -57,6 +58,7 @@ public class AccountService {
 //        return accountRepository.findAllByDisplayNameContainingIgnoreCase(displayName);
 //    }
 
+    @Transactional(noRollbackFor = Exception.class)
     public Object createNewAccount(AccountRequestEntity reqEntity) {
         // check if there is already an existing account in database
         // require that the account need to register with email firstly via SELF_PROVIDED method
