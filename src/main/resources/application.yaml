@@ -37,6 +37,7 @@ spring:
 #      database: highland-mimic
 
 server:
+  port: 443
   servlet:
     context-path: /kurge/api
 
