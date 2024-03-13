@@ -21,7 +21,9 @@ public class ApplicationConfiguration {
 
     @Bean
     public DateTimeProvider auditingDateTimeProvider() {
-        return () -> Optional.of(LocalDateTime.now().atZone(ZoneId.of("UTC+07:00")));
+        return () -> Optional.of(
+                LocalDateTime.now().atZone(ZoneId.of("UTC+07:00"))
+        );
     }
 
     @EventListener

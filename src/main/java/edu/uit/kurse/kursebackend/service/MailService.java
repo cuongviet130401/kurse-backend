@@ -16,7 +16,6 @@ public class MailService {
 
     public void issueResetPassword(Account receiver, String resetToken) throws MessagingException {
         String to = receiver.getEmail();
-
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message);
 
@@ -36,45 +35,44 @@ public class MailService {
                 """.formatted(receiver.getUsername(), resetToken);
 
         helper.setText(
-                this.renderTitleHeader("Reset Your Password")
-                + this.renderContentTemplate(mailContent)
-                + this.renderSignatureAndFooter()
-        ,true);
+            renderTitleHeader("Reset Your Password") + renderContentTemplate(mailContent) + renderSignatureAndFooter()
+                ,true
+        );
 
         mailSender.send(message);
     }
 
     private String renderTitleHeader(String title) {
         return """
-               <h1 style="padding: 1em; margin-bottom: 0px; font-size: 2em; font-family: 'Cambria'; text-align: right; background: linear-gradient(to left, #191654, #43C6AC); color: white;">
-                     %s
-                 </h1>
-               """.formatted(title);
+            <h1 style="padding: 1em; margin-bottom: 0px; font-size: 2em; font-family: 'Cambria'; text-align: right; background: linear-gradient(to left, #191654, #43C6AC); color: white;">
+                 %s
+            </h1>
+            """.formatted(title);
     }
 
     private String renderSignatureAndFooter() {
         return """
-               <footer style="padding: 25px; background: #202124; color: white;">
-                     <strong>Aufgabe Tasks</strong> mailing service. 2023 &copy;
-                 </footer>
-               """;
+           <footer style="padding: 25px; background: #202124; color: white;">
+                 <strong>Aufgabe Tasks</strong> mailing service. 2023 &copy;
+           </footer>
+           """;
     }
 
     private String renderContentTemplate(String htmlContent) {
         return """
-                <div style="display: flex; width: 100%%; padding-top: 50px; padding-bottom: 50px;">
-                     <div style="margin: auto; padding: 1em">
-                         %s
-                         <br>
-                         <p>If there are any further issues or supports required, please contact the <strong>Aufgabe Mailing Support Team</strong> at <em>support@auf.com</em>.</p>
-                         <br>
-                         <hr><br>
-                         <p>Thanks for choosing us for your business.</p>
-                         <p>Best regards,</p>
-                         <br>
-                         <p><strong>Aufgabe Mailing Team</strong></p>
-                     </div>
+            <div style="display: flex; width: 100%%; padding-top: 50px; padding-bottom: 50px;">
+                 <div style="margin: auto; padding: 1em">
+                     %s
+                     <br>
+                     <p>If there are any further issues or supports required, please contact the <strong>Aufgabe Mailing Support Team</strong> at <em>support@auf.com</em>.</p>
+                     <br>
+                     <hr><br>
+                     <p>Thanks for choosing us for your business.</p>
+                     <p>Best regards,</p>
+                     <br>
+                     <p><strong>Aufgabe Mailing Team</strong></p>
                  </div>
-               """.formatted(htmlContent);
+            </div>
+            """.formatted(htmlContent);
     }
 }

@@ -17,17 +17,18 @@ public class SimpleInternalCredentialService {
     private final List<ResetRequestCredential> resetRequestCredentials;
 
     public ResetRequestCredential issueAndPersistResetCredential(String userEmail) {
-        String uuid = UUID.randomUUID().toString();
-        String tokenSource = UUID.randomUUID().toString();
-        String resetToken = tokenSource.substring(tokenSource.length() - 6);
-        ResetRequestCredential preparedCredential = new ResetRequestCredential(uuid, resetToken, userEmail);
-        this.resetRequestCredentials.add(preparedCredential);
+        var uuid = UUID.randomUUID().toString();
+        var tokenSource = UUID.randomUUID().toString();
+        var resetToken = tokenSource.substring(tokenSource.length() - 6);
+
+        var preparedCredential = new ResetRequestCredential(uuid, resetToken, userEmail);
+        resetRequestCredentials.add(preparedCredential);
 
         return preparedCredential;
     }
 
     public String acceptResetCredential(String credential) {
-        return this.resetRequestCredentials.stream()
+        return resetRequestCredentials.stream()
                 .filter(e -> e.getResetCredential().equalsIgnoreCase(credential))
                 .findFirst()
                 .map(e -> {
@@ -44,9 +45,11 @@ public class SimpleInternalCredentialService {
                 .findFirst()
                 .map(e -> {
                     boolean result = e.getResetToken().equalsIgnoreCase(resetToken);
-                    log.info("[VALIDATE@" + resetCredential + "] resetToken: "
-                            + resetToken
-                            + "; is matched with stored: " + e.getResetToken() + " => " + result);
+                    log.info(
+                            "[VALIDATE@" + resetCredential + "] resetToken: "
+                                    + resetToken
+                                    + "; is matched with stored: " + e.getResetToken() + " => " + result
+                    );
                     return result;
                 }).orElseThrow();
     }

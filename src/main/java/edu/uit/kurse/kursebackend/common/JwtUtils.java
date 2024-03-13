@@ -1,6 +1,6 @@
 package edu.uit.kurse.kursebackend.common;
 
-import edu.uit.kurse.kursebackend.model.persistent.Account;
+import edu.uit.kurse.kursebackend.model.persistence.Account;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.impl.DefaultClaims;
 

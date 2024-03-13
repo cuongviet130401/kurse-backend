@@ -21,7 +21,7 @@ import static edu.uit.kurse.kursebackend.common.ControllerUtils.controllerWrappe
 @RequiredArgsConstructor
 @Validated
 public class AccountController {
-    
+
     private final AccountService accountService;
     private final SecurityHandler securityHandler;
 
@@ -152,11 +152,11 @@ public class AccountController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> removeAccountById(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationToken,
-                                            @PathVariable String id) {
+                                               @PathVariable String id) {
         return securityHandler.roleGuarantee(
                 authorizationToken, SecurityHandler.ALLOW_STAKEHOLDERS,
                 () -> accountService.removeAccountById(id)
         );
     }
-    
+
 }
