@@ -1,8 +1,8 @@
 package edu.uit.kurse.kursebackend.model.persistence;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import edu.uit.kurse.kursebackend.model.AccountRole;
-import edu.uit.kurse.kursebackend.model.OAuth2Provider;
+import edu.uit.kurse.kursebackend.model.LearningStatus;
+import edu.uit.kurse.kursebackend.model.PaymentStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;

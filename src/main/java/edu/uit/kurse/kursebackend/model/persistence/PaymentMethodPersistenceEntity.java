@@ -1,17 +1,12 @@
 package edu.uit.kurse.kursebackend.model.persistence;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import edu.uit.kurse.kursebackend.model.AccountRole;
-import edu.uit.kurse.kursebackend.model.OAuth2Provider;
+import edu.uit.kurse.kursebackend.model.PaymentType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedDate;
-
-import java.time.LocalDateTime;
 
 @Data
 @Builder

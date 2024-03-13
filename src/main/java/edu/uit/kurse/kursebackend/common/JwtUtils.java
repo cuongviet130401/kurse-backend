@@ -1,6 +1,6 @@
 package edu.uit.kurse.kursebackend.common;
 
-import edu.uit.kurse.kursebackend.model.persistence.Account;
+import edu.uit.kurse.kursebackend.model.persistence.AccountPersistenceEntity;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.impl.DefaultClaims;
 
@@ -10,7 +10,7 @@ public class JwtUtils {
 
     private static final long EXPIRE_DURATION_1_HOUR = 60 * 60 * 1000;
 
-    public static String issueAuthenticatedAccessToken(Account account) {
+    public static String issueAuthenticatedAccessToken(AccountPersistenceEntity account) {
         return Jwts.builder()
                 .setSubject(account.getId() + "~" + account.getRole())
                 .setIssuedAt(new Date())

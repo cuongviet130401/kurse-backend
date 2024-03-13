@@ -16,7 +16,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.UUID;
 import java.util.function.Supplier;
 
 import static edu.uit.kurse.kursebackend.common.ControllerUtils.controllerWrapper;
@@ -27,8 +26,8 @@ import static java.util.Objects.requireNonNull;
 @RequiredArgsConstructor
 public class SecurityHandler {
 
-    public static final List<AccountRole> ALLOW_AUTHORITIES = List.of(AccountRole.ADMIN, AccountRole.LECTURER);
-    public static final List<AccountRole> ALLOW_STAKEHOLDERS = List.of(AccountRole.ADMIN, AccountRole.LECTURER, AccountRole.STUDENT);
+    public static final List<AccountRole> ALLOW_AUTHORITIES = List.of(AccountRole.MANAGER_ACCOUNT, AccountRole.TEACHER_ACCOUNT);
+    public static final List<AccountRole> ALLOW_ACTORS = List.of(AccountRole.MANAGER_ACCOUNT, AccountRole.TEACHER_ACCOUNT, AccountRole.STUDENT_ACCOUNT);
 
     private final AccountRepository accountRepository;
 
@@ -60,9 +59,10 @@ public class SecurityHandler {
             }
 
             String[] tokens = claims.getSubject().split("~");
+            var accountId = Integer.parseInt(tokens[0]);
             requestAccountRole = AccountRole.valueOf(tokens[1]);
 
-            if(!checkIfAccountIdIsExist(tokens[0]) || !checkIfRoleMatchesWithAccount(tokens[0], AccountRole.valueOf(tokens[1]))) {
+            if(!checkIfAccountIdIsExist(accountId) || !checkIfRoleMatchesWithAccount(accountId, AccountRole.valueOf(tokens[1]))) {
                 throw new IllegalArgumentException("Invalid account information");
             }
 
@@ -83,12 +83,12 @@ public class SecurityHandler {
         return this.roleGuarantee(authenticationToken, List.of(allowedRole), serviceExecutionSupplier);
     }
 
-    private boolean checkIfAccountIdIsExist(String accountId) {
-        return accountRepository.existsById(UUID.fromString(accountId));
+    private boolean checkIfAccountIdIsExist(Integer accountId) {
+        return accountRepository.existsById(accountId);
     }
 
-    private boolean checkIfRoleMatchesWithAccount(String accountId, AccountRole role) {
-        return accountRepository.getAccountRoleById(UUID.fromString(accountId))
+    private boolean checkIfRoleMatchesWithAccount(Integer accountId, AccountRole role) {
+        return accountRepository.getAccountRoleById(accountId)
                 .map(role::equals)
                 .orElseThrow(() -> new NullPointerException("Invalid account information"));
     }
