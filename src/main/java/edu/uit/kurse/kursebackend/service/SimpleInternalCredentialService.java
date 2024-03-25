@@ -16,25 +16,25 @@ public class SimpleInternalCredentialService {
 
     private final List<ResetRequestCredential> resetRequestCredentials;
 
-    public ResetRequestCredential issueAndPersistResetCredential(String userEmail) {
+    public ResetRequestCredential issueAndPersistResetCredential(Integer accountId) {
         var uuid = UUID.randomUUID().toString();
         var tokenSource = UUID.randomUUID().toString();
         var resetToken = tokenSource.substring(tokenSource.length() - 6);
 
-        var preparedCredential = new ResetRequestCredential(uuid, resetToken, userEmail);
+        var preparedCredential = new ResetRequestCredential(uuid, resetToken, accountId);
         resetRequestCredentials.add(preparedCredential);
 
         return preparedCredential;
     }
 
-    public String acceptResetCredential(String credential) {
+    public Integer acceptResetCredential(String credential) {
         return resetRequestCredentials.stream()
                 .filter(e -> e.getResetCredential().equalsIgnoreCase(credential))
                 .findFirst()
                 .map(e -> {
-                    String issuedEmail = e.getIssuedUserIdentity();
+                    var issuedAccountId = e.getIssuedAccountId();
                     resetRequestCredentials.remove(e);
-                    return issuedEmail;
+                    return issuedAccountId;
                 }).orElseThrow();
     }
 
@@ -59,7 +59,7 @@ public class SimpleInternalCredentialService {
     public static class ResetRequestCredential {
         private String resetCredential;
         private String resetToken;
-        private String issuedUserIdentity;
+        private Integer issuedAccountId;
     }
 
 }

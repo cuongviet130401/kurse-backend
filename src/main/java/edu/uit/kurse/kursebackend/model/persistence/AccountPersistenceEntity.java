@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @Data
 @Builder
 @Entity
-@Table(name = "ACCOUNT")
+@Table(name = "BITBLE_ACCOUNT")
 @NoArgsConstructor
 @AllArgsConstructor
 public class AccountPersistenceEntity {

@@ -1,9 +1,24 @@
 package edu.uit.kurse.kursebackend.service;
 
+import edu.uit.kurse.kursebackend.model.OAuth2Provider;
+import edu.uit.kurse.kursebackend.model.dto.Account;
+import edu.uit.kurse.kursebackend.model.dto.User;
+import edu.uit.kurse.kursebackend.model.mapping.AccountMapper;
+import edu.uit.kurse.kursebackend.model.mapping.UserMapper;
+import edu.uit.kurse.kursebackend.model.persistence.AccountPersistenceEntity;
+import edu.uit.kurse.kursebackend.model.persistence.UserPersistenceEntity;
+import edu.uit.kurse.kursebackend.model.request.CreateAccountRequestEntity;
 import edu.uit.kurse.kursebackend.repository.AccountRepository;
+import edu.uit.kurse.kursebackend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -11,56 +26,83 @@ import org.springframework.stereotype.Service;
 public class AccountService {
 
     private final AccountRepository accountRepository;
+    private final UserRepository userRepository;
+
     private final MailService mailService;
     private final SimpleInternalCredentialService simpleInternalCredentialService;
 
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    /* Test only */
-//    public long removeAllAccounts() {
-//        long quantity = accountRepository.count();
-//        accountRepository.deleteAll();
-//        return quantity;
-//    }
-//
-//    public List<Account> getAllAccounts() {
+
+    //    public List<Account> getAllAccounts() {
 //        return accountRepository.findAll();
 //    }
 //
-//    public Account getAccountById(String id) {
-//        return accountRepository.findById(UUID.fromString(id)).orElse(null);
-//    }
-//
-//    public Account searchAccountByIdentity(String q) {
-//        return accountRepository.findByEmailIgnoreCase(q)
-//                .or(() -> accountRepository.findByUsernameIgnoreCase(q))
-//                .or(() -> accountRepository.findByPhoneNumber(q))
-//                .orElse(null);
-//    }
-//
+    public Optional<Account> getAccountById(Integer id) {
+        return accountRepository.findById(id)
+                .map(AccountMapper.INSTANCE::toDto);
+    }
+
+    //
+    public Optional<Account> searchAccountByIdentity(String q) {
+        return accountRepository.findByUsernameIgnoreCase(q)
+                .or(
+                        () -> userRepository.findByEmail(q).flatMap(
+                                (matchedUser) -> accountRepository.findById(matchedUser.getId())
+                        )
+                )
+                .or(
+                        () -> userRepository.findByPhoneNumber(q).flatMap(
+                                (matchedUser) -> accountRepository.findById(matchedUser.getId())
+                        )
+                )
+                .map(AccountMapper.INSTANCE::toDto);
+    }
+
+    //
 ////    public List<Account> searchAccountsByDisplayName(String displayName) {
 ////        return accountRepository.findAllByDisplayNameContainingIgnoreCase(displayName);
 ////    }
 //
-//    @Transactional(noRollbackFor = Exception.class)
-//    public Object createNewAccount(AccountRequestEntity reqEntity) {
-//        // check if there is already an existing account in database
-//        // require that the account need to register with email firstly via SELF_PROVIDED method
-//
-//        if (Objects.nonNull(this.searchAccountByIdentity(reqEntity.getEmail()))) {
-//            throw new IllegalArgumentException(String.format("Account with given email '%s' is already exists", reqEntity.getEmail()));
-//        }
-//        if (Objects.nonNull(this.searchAccountByIdentity(reqEntity.getPhoneNumber()))) {
-//            throw new IllegalArgumentException(String.format("Account with given phone number '%s' is already exists", reqEntity.getPhoneNumber()));
-//        }
-//        if (Objects.nonNull(this.searchAccountByIdentity(reqEntity.getUsername()))) {
-//            throw new IllegalArgumentException(String.format("Account with given username '%s' is already exists", reqEntity.getUsername()));
-//        }
-//
-//        var preparedAccount = AccountMapper.INSTANCE.toPersistent(reqEntity);
-//
-//        return accountRepository.save(preparedAccount);
-//    }
-//
+    @Transactional(noRollbackFor = Exception.class)
+    public Boolean createNewAccount(CreateAccountRequestEntity reqEntity) {
+        // check if there is already an existing account in database
+        // require that the account need to register with email firstly via SELF_PROVIDED method
+
+        searchAccountByIdentity(reqEntity.getEmail()).ifPresent(
+                (e) -> {
+                    throw new IllegalArgumentException("Account with given email is already exists");
+                }
+        );
+        searchAccountByIdentity(reqEntity.getPhoneNumber()).ifPresent(
+                (e) -> {
+                    throw new IllegalArgumentException("Account with given phone number is already exists");
+                }
+        );
+
+        var persistedUser = userRepository.save(
+                UserPersistenceEntity.builder()
+                        .firstName(reqEntity.getFirstName())
+                        .lastName(reqEntity.getLastName())
+                        .email(reqEntity.getEmail())
+                        .phoneNumber(reqEntity.getPhoneNumber())
+                        .isMale(true)
+                        .build()
+        );
+
+        accountRepository.save(
+                AccountPersistenceEntity.builder()
+                        .userId(persistedUser.getId())
+                        .username(UUID.randomUUID().toString())
+                        .encryptedPassword(bCryptPasswordEncoder.encode(reqEntity.getPassword()))
+                        .identifyProvider(OAuth2Provider.BITBLE)
+                        .build()
+        );
+
+        return true;
+    }
+
+    //
 ////    public Account linkAccountWithAssociatedProvider(OAuth2AuthenticationRequestEntity reqEntity) {
 ////
 ////        Account loadedAccount = requireNonNull(
@@ -164,38 +206,37 @@ public class AccountService {
 //        return accountRepository.save(preparedAccount);
 //    }
 //
-//    @SneakyThrows
-//    public String issueResetPasswordMail(String emailAddress) {
-//        Account receiver = accountRepository.findByEmailIgnoreCase(emailAddress)
-//                .orElseThrow(() -> new NullPointerException("Invalid email address: " + emailAddress));
-//
-//        SimpleInternalCredentialService.ResetRequestCredential credentialEntry =
-//                this.simpleInternalCredentialService.issueAndPersistResetCredential(receiver.getUsername());
-//
-//        mailService.issueResetPassword(receiver, credentialEntry.getResetToken());
-//
-//        return credentialEntry.getResetCredential();
-//    }
-//
-//    public Account resetNewPasswordForExistingAccount(String resetCredential, String newHashedPassword) {
-//        String accountEmail = simpleInternalCredentialService.acceptResetCredential(resetCredential);
-//        Account preparedAccount = this.searchAccountByIdentity(accountEmail);
-//
-//        preparedAccount.setPassword(newHashedPassword);
-//
-//        return accountRepository.save(preparedAccount);
-//    }
-//
-//    public Account changeRoleOfExistingAccount(String identity, String newRole) {
-//        Account preparedAccount = requireNonNull(this.searchAccountByIdentity(identity));
-//
-//        preparedAccount.setRole(AccountRole.valueOf(newRole));
-//
-//        return accountRepository.save(preparedAccount);
-//    }
-//
-//    public boolean validateResetToken(String resetCredential, String resetToken) {
-//        return simpleInternalCredentialService.isValid(resetCredential, resetToken);
-//    }
-    
+    @SneakyThrows
+    public String issueResetPasswordMail(String emailAddress) {
+        User matchedUser = userRepository.findByEmail(emailAddress)
+                .map(UserMapper.INSTANCE::toDto)
+                .orElseThrow(() -> new NullPointerException("There is no user associated with given email"));
+
+        Account matchedAccount = accountRepository.findById(matchedUser.getId())
+                .map(AccountMapper.INSTANCE::toDto)
+                .orElseThrow();
+
+        SimpleInternalCredentialService.ResetRequestCredential credentialEntry =
+                this.simpleInternalCredentialService.issueAndPersistResetCredential(matchedAccount.getId());
+
+        mailService.issueResetPassword(matchedUser, credentialEntry.getResetToken());
+
+        return credentialEntry.getResetCredential();
+    }
+
+    public Boolean resetNewPasswordForExistingAccount(String resetCredential, String newHashedPassword) {
+        var accountId = simpleInternalCredentialService.acceptResetCredential(resetCredential);
+        var preparedAccount = accountRepository.findById(accountId).orElseThrow();
+
+        preparedAccount.setEncryptedPassword(newHashedPassword);
+
+        accountRepository.save(preparedAccount);
+
+        return true;
+    }
+
+    public boolean validateResetToken(String resetCredential, String resetToken) {
+        return simpleInternalCredentialService.isValid(resetCredential, resetToken);
+    }
+
 }

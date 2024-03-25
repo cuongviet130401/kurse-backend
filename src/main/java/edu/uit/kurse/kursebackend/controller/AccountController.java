@@ -1,11 +1,16 @@
 package edu.uit.kurse.kursebackend.controller;
 
 import edu.uit.kurse.kursebackend.common.SecurityHandler;
+import edu.uit.kurse.kursebackend.model.request.CreateAccountRequestEntity;
 import edu.uit.kurse.kursebackend.service.AccountService;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import static edu.uit.kurse.kursebackend.common.ControllerUtils.controllerWrapper;
 
 @RestController
 @RequestMapping("/v1/accounts")
@@ -16,16 +21,16 @@ public class AccountController {
     private final AccountService accountService;
     private final SecurityHandler securityHandler;
 
-//    @GetMapping("/issue-rspwmail")
-//    public ResponseEntity<?> resetPassword(@RequestParam @NotBlank String email) {
-//        return controllerWrapper(() -> accountService.issueResetPasswordMail(email));
-//    }
-//
-//    @PostMapping("/validate-reset-token")
-//    public ResponseEntity<?> validateResetToken(@RequestParam String resetCredential,
-//                                                @RequestBody String resetToken) {
-//        return controllerWrapper(() -> accountService.validateResetToken(resetCredential, resetToken));
-//    }
+    @GetMapping("/issue-rspwmail")
+    public ResponseEntity<?> resetPassword(@RequestParam @NotBlank String email) {
+        return controllerWrapper(() -> accountService.issueResetPasswordMail(email));
+    }
+
+    @PostMapping("/validate-reset-token")
+    public ResponseEntity<?> validateResetToken(@RequestParam String resetCredential,
+                                                @RequestBody String resetToken) {
+        return controllerWrapper(() -> accountService.validateResetToken(resetCredential, resetToken));
+    }
 //
 //    @GetMapping
 //    public ResponseEntity<?> getAllAccounts(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationToken) {
@@ -66,10 +71,10 @@ public class AccountController {
 //
 //    // WRITE operation
 //
-//    @PostMapping("/signup")
-//    public ResponseEntity<?> createNewAccount(@Valid @RequestBody AccountRequestEntity reqEntity) {
-//        return controllerWrapper(() -> accountService.createNewAccount(reqEntity));
-//    }
+    @PostMapping("/signup")
+    public ResponseEntity<?> createNewAccount(@Valid @RequestBody CreateAccountRequestEntity reqEntity) {
+        return controllerWrapper(() -> accountService.createNewAccount(reqEntity));
+    }
 //
 //    // MODIFY operation
 //
@@ -104,21 +109,21 @@ public class AccountController {
 //        );
 //    }
 //
-//    @PostMapping("/reset-pass")
-//    public ResponseEntity<?> resetNewPasswordForExistingAccount(@RequestParam String resetCredential,
-//                                                                @RequestBody String newHashedPassword) {
-//        return controllerWrapper(() -> accountService.resetNewPasswordForExistingAccount(resetCredential, newHashedPassword));
+    @PostMapping("/reset-pass")
+    public ResponseEntity<?> resetNewPasswordForExistingAccount(@RequestParam String resetCredential,
+                                                                @RequestBody String newHashedPassword) {
+        return controllerWrapper(() -> accountService.resetNewPasswordForExistingAccount(resetCredential, newHashedPassword));
+    }
+
+//    @PostMapping("/oauth2/link")
+//    public ResponseEntity<?> linkAccountWithAssociatedProvider(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationToken,
+//                                                               @RequestBody OAuth2AuthenticationRequestEntity reqEntity) {
+//        return securityHandler.roleGuarantee(
+//                authorizationToken,
+//                () -> accountService.linkAccountWithAssociatedProvider(reqEntity),
+//                SecurityHandler.ALLOW_STAKEHOLDERS
+//        );
 //    }
-//
-////    @PostMapping("/oauth2/link")
-////    public ResponseEntity<?> linkAccountWithAssociatedProvider(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationToken,
-////                                                               @RequestBody OAuth2AuthenticationRequestEntity reqEntity) {
-////        return securityHandler.roleGuarantee(
-////                authorizationToken,
-////                () -> accountService.linkAccountWithAssociatedProvider(reqEntity),
-////                SecurityHandler.ALLOW_STAKEHOLDERS
-////        );
-////    }
 //
 ////    @PostMapping("/oauth2/unlink")
 ////    public ResponseEntity<?> unlinkAccountWithAssociatedProvider(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationToken,
@@ -132,14 +137,6 @@ public class AccountController {
 ////    }
 //
 //    // DELETE operation
-//
-//    @DeleteMapping("/dev/all")
-//    public ResponseEntity<?> removeAllAccounts(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationToken) {
-//        return securityHandler.roleGuarantee(
-//                authorizationToken, AccountRole.ADMIN,
-//                accountService::removeAllAccounts
-//        );
-//    }
 //
 //    @DeleteMapping("/{id}")
 //    public ResponseEntity<?> removeAccountById(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationToken,
