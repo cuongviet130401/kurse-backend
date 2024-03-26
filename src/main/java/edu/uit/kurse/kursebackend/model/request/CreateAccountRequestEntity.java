@@ -21,7 +21,7 @@ public class CreateAccountRequestEntity {
     private String email;
 
     @NotBlank
-    @Pattern(regexp = "", message = ValidationErrorMessages.PHONE_NUMBER_PATTERN)
+    @Pattern(regexp = "[0-9]{10}", message = ValidationErrorMessages.PHONE_NUMBER_PATTERN)
     private String phoneNumber;
 
     @NotBlank
