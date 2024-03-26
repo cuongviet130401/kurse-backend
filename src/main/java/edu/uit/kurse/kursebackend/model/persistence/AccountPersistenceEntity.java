@@ -1,6 +1,5 @@
 package edu.uit.kurse.kursebackend.model.persistence;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import edu.uit.kurse.kursebackend.model.AccountRole;
 import edu.uit.kurse.kursebackend.model.OAuth2Provider;
 import jakarta.persistence.*;
@@ -38,7 +37,6 @@ public class AccountPersistenceEntity {
 	@Column(name = "createdAt", nullable = false, updatable = false)
 	private LocalDateTime createdAt;
 
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
 	private LocalDateTime lastSignInAt;
 
 	@Enumerated(EnumType.STRING)
