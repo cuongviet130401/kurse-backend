@@ -25,8 +25,9 @@ spring:
 
   jpa:
     properties:
+      hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
       hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
+        "globally_quoted_identifiers": "true"
         show_sql: true
         format_sql: true
     generate-ddl: true
