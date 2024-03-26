@@ -15,7 +15,6 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -64,7 +63,7 @@ public class AccountService {
 ////        return accountRepository.findAllByDisplayNameContainingIgnoreCase(displayName);
 ////    }
 //
-    @Transactional(noRollbackFor = Exception.class)
+//    @Transactional
     public Boolean createNewAccount(CreateAccountRequestEntity reqEntity) {
         // check if there is already an existing account in database
         // require that the account need to register with email firstly via SELF_PROVIDED method
