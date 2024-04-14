@@ -1,7 +1,9 @@
 package edu.bitble.kurse.controller;
 
 import edu.bitble.kurse.common.SecurityHandler;
+import edu.bitble.kurse.model.request.CourseLikeRecordRequest;
 import edu.bitble.kurse.service.CourseLikeRecordService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -10,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import static edu.bitble.kurse.common.ControllerUtils.controllerWrapper;
 
 @RestController
-@RequestMapping("/v1/course-like-records")
+@RequestMapping("/v1/courselikerecords")
 @RequiredArgsConstructor
 @Validated
 public class CourseLikeRecordController {
@@ -34,16 +36,16 @@ public class CourseLikeRecordController {
         return controllerWrapper(() -> service.get(id));
     }
 
-//    @PostMapping
-//    public ResponseEntity<?> create(@Valid @RequestBody CourseLikeRecordRequest req) {
-//        return controllerWrapper(() -> service.create(req));
-//    }
-//
-//    @PutMapping("/{id}")
-//    public ResponseEntity<?> update(@PathVariable Integer id,
-//                                    @Valid @RequestBody CourseLikeRecordRequest req) {
-//        return controllerWrapper(() -> service.update(id, req));
-//    }
+    @PostMapping
+    public ResponseEntity<?> create(@Valid @RequestBody CourseLikeRecordRequest req) {
+        return controllerWrapper(() -> service.create(req));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> update(@PathVariable Integer id,
+                                    @Valid @RequestBody CourseLikeRecordRequest req) {
+        return controllerWrapper(() -> service.update(id, req));
+    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable Integer id) {
