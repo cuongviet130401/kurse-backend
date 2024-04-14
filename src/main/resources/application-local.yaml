@@ -1,0 +1,15 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://kurge-api.bitble.one:5432/bitble_kurse_dev
+    username: postgres
+    password: postgres
+  jpa:
+    properties:
+      hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
+      hibernate:
+        "globally_quoted_identifiers": "true"
+        show_sql: true
+        format_sql: true
+    generate-ddl: true
+    hibernate:
+      ddl-auto: create
