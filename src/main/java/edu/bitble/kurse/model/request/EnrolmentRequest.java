@@ -1,5 +1,7 @@
 package edu.bitble.kurse.model.request;
 
+import edu.bitble.kurse.model.LearningStatus;
+import edu.bitble.kurse.model.PaymentStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

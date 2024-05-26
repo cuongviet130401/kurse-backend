@@ -31,13 +31,6 @@ public class CourseRatingRecordService {
                 .orElseThrow();
 		}
 
-		public List<CourseRatingRecord> search(String query) {
-			return repository.findAllByNameContainsIgnoreCase(query)
-                .stream()
-                .map(CourseRatingRecordMapper.INSTANCE::toDto)
-                .toList();
-		}
-
 		public CourseRatingRecord create(CourseRatingRecordRequest req) {
 			// TODO: precondition?
 

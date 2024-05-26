@@ -25,10 +25,10 @@ public class CourseLikeRecordController {
         return controllerWrapper(service::getAll);
     }
 
-    @GetMapping("search")
-    public ResponseEntity<?> search(@RequestParam String q) {
-        return controllerWrapper(() -> service.search(q));
-    }
+//    @GetMapping("search")
+//    public ResponseEntity<?> search(@RequestParam String q) {
+//        return controllerWrapper(() -> service.search(q));
+//    }
 
 
     @GetMapping("/{id}")

@@ -7,8 +7,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -20,13 +18,6 @@ public class StudentService {
         return repository.findById(id)
                 .map(StudentMapper.INSTANCE::toDto)
                 .orElseThrow();
-    }
-
-    public List<Student> search(String q) {
-        return repository.findAllByNameContainsIgnoreCase(q)
-                .stream()
-                .map(StudentMapper.INSTANCE::toDto)
-                .toList();
     }
 
     public Object createStudentDetails(Integer acccountId) {

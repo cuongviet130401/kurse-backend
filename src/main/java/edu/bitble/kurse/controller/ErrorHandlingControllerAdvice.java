@@ -1,6 +1,7 @@
 package edu.bitble.kurse.controller;
 
 import edu.bitble.kurse.common.ControllerUtils;
+import edu.bitble.kurse.common.exception.AuthorizationException;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,14 +11,17 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.NoSuchElementException;
-
-import static edu.bitble.kurse.common.ControllerUtils.buildErrorResponse;
+import java.util.*;
 
 @ControllerAdvice
 public class ErrorHandlingControllerAdvice {
+
+    @ExceptionHandler(AuthorizationException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ResponseBody
+    Map<String, Object> onAuthenticationException(Exception e) {
+        return ControllerUtils.buildErrorResponse(e);
+    }
 
     @ExceptionHandler({ConstraintViolationException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -34,10 +38,18 @@ public class ErrorHandlingControllerAdvice {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
     Object onMethodArgumentNotValidException(MethodArgumentNotValidException e) {
-        var fields = new LinkedHashMap<String, String>();
-        e.getBindingResult().getFieldErrors().forEach(
-                violation -> fields.put(violation.getField(), violation.getDefaultMessage())
-        );
+        var fields = new LinkedHashMap<String, List<String>>();
+        e.getBindingResult().getFieldErrors().forEach(violation -> {
+            var initializedInvalidField = fields.putIfAbsent(violation.getField(), new ArrayList<>());
+            if (initializedInvalidField == null) {
+                var errorMessage = violation.getDefaultMessage();
+                if (errorMessage != null) {
+                    errorMessage = errorMessage.replace(violation.getField() + ":", "");
+                }
+
+                fields.get(violation.getField()).add(errorMessage);
+            }
+        });
         return ControllerUtils.buildErrorResponse(e, fields);
     }
 
@@ -55,6 +67,7 @@ public class ErrorHandlingControllerAdvice {
         var parts = e.getMessage().split(":");
         return ControllerUtils.buildErrorResponse(e, Map.of(parts[0], parts[1]));
     }
+
     
     @ExceptionHandler({UnsupportedOperationException.class})
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)

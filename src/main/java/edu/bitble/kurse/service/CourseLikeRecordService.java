@@ -31,13 +31,6 @@ public class CourseLikeRecordService {
                 .orElseThrow();
 		}
 
-		public List<CourseLikeRecord> search(String query) {
-			return repository.findAllByNameContainsIgnoreCase(query)
-                .stream()
-                .map(CourseLikeRecordMapper.INSTANCE::toDto)
-                .toList();
-		}
-
 		public CourseLikeRecord create(CourseLikeRecordRequest req) {
 			// TODO: precondition?
 

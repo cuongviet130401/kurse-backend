@@ -21,4 +21,5 @@ public class Account {
     private LocalDateTime lastSignInAt;
     private OAuth2Provider identifyProvider;
     private AccountRole role;
+    private String encryptedPassword;
 }

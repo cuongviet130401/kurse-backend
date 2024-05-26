@@ -1,6 +1,8 @@
 package edu.bitble.kurse.model.persistence;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import edu.bitble.kurse.model.LearningStatus;
+import edu.bitble.kurse.model.PaymentStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -30,12 +32,14 @@ public class EnrolmentEntity {
 	private Integer courseId;
 
 	@NotNull
+	@Enumerated(EnumType.STRING)
 	private LearningStatus learningStatus;
 
 	@NotNull
 	private Float learningProgress;
 
 	@NotNull
+	@Enumerated(EnumType.STRING)
 	private PaymentStatus paymentStatus;
 
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")

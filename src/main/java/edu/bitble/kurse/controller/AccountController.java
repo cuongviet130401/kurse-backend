@@ -2,16 +2,15 @@ package edu.bitble.kurse.controller;
 
 import edu.bitble.kurse.common.ControllerUtils;
 import edu.bitble.kurse.common.SecurityHandler;
-import edu.bitble.kurse.service.AccountService;
+import edu.bitble.kurse.model.request.AuthenticationRequest;
 import edu.bitble.kurse.model.request.CreateAccountRequest;
+import edu.bitble.kurse.service.AccountService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import static edu.bitble.kurse.common.ControllerUtils.controllerWrapper;
 
 @RestController
 @RequestMapping("/v1/accounts")
@@ -60,11 +59,11 @@ public class AccountController {
 ////        return ResponseEntity.ok(accountService.searchAccountsByDisplayName(q));
 ////    }
 //
-//    @PostMapping("/login")
-//    public ResponseEntity<?> login(@Valid @RequestBody AuthenticationRequestEntity reqEntity) {
-//        return controllerWrapper(() -> accountService.login(reqEntity));
-//    }
-//
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@Valid @RequestBody AuthenticationRequest reqEntity) {
+        return ResponseEntity.ok(accountService.login(reqEntity));
+    }
+
 ////    @PostMapping("/oauth2/login")
 ////    public ResponseEntity<?> loginViaOAuth2Provider(@RequestBody OAuth2AuthenticationRequestEntity reqEntity) {
 ////        return controllerWrapper(() -> accountService.loginViaOAuth2Provider(reqEntity));

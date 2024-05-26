@@ -1,16 +1,20 @@
 package edu.bitble.kurse.service;
 
+import edu.bitble.kurse.common.JwtUtils;
+import edu.bitble.kurse.common.SecurityHandler;
+import edu.bitble.kurse.common.exception.AuthorizationException;
 import edu.bitble.kurse.model.AccountRole;
 import edu.bitble.kurse.model.OAuth2Provider;
-import edu.bitble.kurse.model.persistence.AccountEntity;
-import edu.bitble.kurse.repository.UserRepository;
 import edu.bitble.kurse.model.dto.Account;
 import edu.bitble.kurse.model.dto.User;
 import edu.bitble.kurse.model.mapping.AccountMapper;
 import edu.bitble.kurse.model.mapping.UserMapper;
+import edu.bitble.kurse.model.persistence.AccountEntity;
 import edu.bitble.kurse.model.persistence.UserEntity;
+import edu.bitble.kurse.model.request.AuthenticationRequest;
 import edu.bitble.kurse.model.request.CreateAccountRequest;
 import edu.bitble.kurse.repository.AccountRepository;
+import edu.bitble.kurse.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -19,6 +23,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -157,18 +162,24 @@ public class AccountService {
 ////        );
 ////    }
 //
-//    public Map<String, Object> login(AuthenticationRequestEntity reqEntity) {
-//        Account loadedAccount = requireNonNull(this.searchAccountByIdentity(reqEntity.getLoginIdentity()));
-//
-//        if (!SecurityHandler.isMatchedPassword(reqEntity.getPassword(), loadedAccount.getPassword())) {
-//            throw new NullPointerException("Invalid login identities");
-//        }
-//
-//        return Map.of(
-//                "accessToken", JwtUtils.issueAuthenticatedAccessToken(loadedAccount),
-//                "accountDocumentEntity", loadedAccount
-//        );
-//    }
+    public Map<String, Object> login(AuthenticationRequest reqEntity) {
+        Account loadedAccount = this.searchAccountByIdentity(reqEntity.getLoginIdentity()).orElseThrow(
+                () -> new AuthorizationException("Invalid login identities")
+        );
+
+        if (!SecurityHandler.isMatchedPassword(reqEntity.getPassword(), loadedAccount.getEncryptedPassword())) {
+            throw new AuthorizationException("Invalid login identities");
+        }
+
+        var loadedEntity = accountRepository.findById(loadedAccount.getId()).orElseThrow();
+        loadedEntity.setLastSignInAt(LocalDateTime.now());
+        accountRepository.save(loadedEntity);
+
+        return Map.of(
+                "accessToken", JwtUtils.issueAuthenticatedAccessToken(loadedAccount),
+                "account", loadedAccount
+        );
+    }
 //
 //    public Object removeAccountById(String id) {
 //        return accountRepository.findById(UUID.fromString(id))

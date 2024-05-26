@@ -1,6 +1,6 @@
 package edu.bitble.kurse.common;
 
-import edu.bitble.kurse.model.persistence.AccountEntity;
+import edu.bitble.kurse.model.dto.Account;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.impl.DefaultClaims;
 
@@ -10,7 +10,7 @@ public class JwtUtils {
 
     private static final long EXPIRE_DURATION_1_HOUR = 60 * 60 * 1000;
 
-    public static String issueAuthenticatedAccessToken(AccountEntity account) {
+    public static String issueAuthenticatedAccessToken(Account account) {
         return Jwts.builder()
                 .setSubject(account.getId() + "~" + account.getRole())
                 .setIssuedAt(new Date())

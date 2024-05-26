@@ -31,13 +31,6 @@ public class EnrolmentService {
                 .orElseThrow();
 		}
 
-		public List<Enrolment> search(String query) {
-			return repository.findAllByNameContainsIgnoreCase(query)
-                .stream()
-                .map(EnrolmentMapper.INSTANCE::toDto)
-                .toList();
-		}
-
 		public Enrolment create(EnrolmentRequest req) {
 			// TODO: precondition?
 

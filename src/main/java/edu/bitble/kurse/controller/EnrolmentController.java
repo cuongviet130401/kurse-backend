@@ -11,8 +11,6 @@ import org.springframework.web.bind.annotation.*;
 
 import static edu.bitble.kurse.common.ControllerUtils.controllerWrapper;
 
-import java.time.LocalDateTime;
-
 @RestController
 @RequestMapping("/v1/enrolments")
 @RequiredArgsConstructor
@@ -27,10 +25,10 @@ public class EnrolmentController {
         return controllerWrapper(service::getAll);
     }
 
-    @GetMapping("search")
-    public ResponseEntity<?> search(@RequestParam String q) {
-        return controllerWrapper(() -> service.search(q));
-    }
+//    @GetMapping("search")
+//    public ResponseEntity<?> search(@RequestParam String q) {
+//        return controllerWrapper(() -> service.search(q));
+//    }
 
 
     @GetMapping("/{id}")

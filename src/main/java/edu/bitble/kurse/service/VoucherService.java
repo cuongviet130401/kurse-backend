@@ -31,13 +31,6 @@ public class VoucherService {
                 .orElseThrow();
 		}
 
-		public List<Voucher> search(String query) {
-			return repository.findAllByNameContainsIgnoreCase(query)
-                .stream()
-                .map(VoucherMapper.INSTANCE::toDto)
-                .toList();
-		}
-
 		public Voucher create(VoucherRequest req) {
 			// TODO: precondition?
 

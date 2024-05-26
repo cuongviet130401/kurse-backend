@@ -32,7 +32,7 @@ public class CourseService {
 		}
 
 		public List<Course> search(String query) {
-			return repository.findAllByNameContainsIgnoreCase(query)
+			return repository.findAllByTitleContainsIgnoreCase(query)
                 .stream()
                 .map(CourseMapper.INSTANCE::toDto)
                 .toList();

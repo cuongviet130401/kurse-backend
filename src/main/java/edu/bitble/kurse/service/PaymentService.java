@@ -31,13 +31,6 @@ public class PaymentService {
                 .orElseThrow();
 		}
 
-		public List<Payment> search(String query) {
-			return repository.findAllByNameContainsIgnoreCase(query)
-                .stream()
-                .map(PaymentMapper.INSTANCE::toDto)
-                .toList();
-		}
-
 		public Payment create(PaymentRequest req) {
 			// TODO: precondition?
 

@@ -1,13 +1,13 @@
 logging:
   level:
-    root: DEBUG
+    root: INFO
 
 spring:
   web:
     resources:
       static-locations: classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/
   datasource:
-    url: jdbc:postgresql://localhost:5432/bitble_kurse_dev
+    url: jdbc:postgresql://kurge-api.bitble.one:5432/bitble_kurse_dev
     username: postgres
     password: postgres
 
